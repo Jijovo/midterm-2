@@ -224,6 +224,16 @@ public:
             return "";
         }
     }
+    //return list size
+    int size() {
+        int count = 0;
+        Node* temp = head;
+        while (temp) {
+            count++;
+            temp = temp->next;
+        }
+        return count;
+    }
 };
 
 int main() {
@@ -269,14 +279,24 @@ int main() {
         }
         //check if the last person leaves the line (20%)
         if (rand() % 100 < END_LEAVE) {
-            cout << line.tail->data << " left the line" << endl;
-            line.pop_back();
+            if (!line.tail) {
+                cout << "Line is empty, no one to leave." << endl;
+            }
+            else {
+                cout << line.tail->data << " left the end of the line" << endl;
+                line.pop_back();
+            }
         }
         //check if a random person leaves the line (10%)
         if (rand() % 100 < LEAVE) {
-            int pos = rand() % (START + i - 1) + 1;
-            cout << line.get_pos(pos) << " left the line" << endl;
-            line.delete_pos(pos);
+            int pos = rand() % line.size() + 1; //get random position in the line
+            if (!line.head) {
+                cout << "Line is empty, no one to leave." << endl;
+            }
+            else {
+                cout << line.get_pos(pos) << " left the line" << endl;
+                line.delete_pos(pos);
+            }
         }
         //check if a VIP joins the line (10%)
         if (rand() % 100 < VIP) {
