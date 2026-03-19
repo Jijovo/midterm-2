@@ -205,6 +205,25 @@ public:
         }
         cout << endl;
     }
+
+    //NEW
+    //return data of node at pos
+    string get_pos(int pos) {
+        if (!head) {
+            cout << "List is empty." << endl;
+            return "";
+        }
+        Node* temp = head;
+        for (int i = 1; i < pos && temp; i++) {
+            temp = temp->next;
+        }
+        if (temp)
+            return temp->data;
+        else {
+            cout << "Position doesn't exist." << endl;
+            return "";
+        }
+    }
 };
 
 int main() {
@@ -234,6 +253,8 @@ int main() {
     //Time periods 2-20
     for (int i = 2; i <= 20; i++) {
         cout << "Minute " << i << ": " << endl;
+        //create new random seed for each minute
+        srand(time(0) + i);
         //check if the first person orders (40%)
         if (rand() % 100 < HELP) {
             //print name of the person being helped and remove them from the line
@@ -246,7 +267,27 @@ int main() {
             line.push_back(newName);
             cout << newName << " joined the line" << endl;
         }
-
+        //check if the last person leaves the line (20%)
+        if (rand() % 100 < END_LEAVE) {
+            cout << line.tail->data << " left the line" << endl;
+            line.pop_back();
+        }
+        //check if a random person leaves the line (10%)
+        if (rand() % 100 < LEAVE) {
+            int pos = rand() % (START + i - 1) + 1;
+            cout << line.get_pos(pos) << " left the line" << endl;
+            line.delete_pos(pos);
+        }
+        //check if a VIP joins the line (10%)
+        if (rand() % 100 < VIP) {
+            string vipName = names[rand() % names.size()];
+            line.push_front(vipName);
+            cout << vipName << " (VIP) joined the front of the line" << endl;
+        }
+        //print the current line
+        cout << "Current line: " << endl;
+        line.print();
+        cout << endl;
     }
 
     return 0;
