@@ -1,9 +1,11 @@
 //Ezzat Mohamadein | ComSc 210 | Midterm 2
 #include <iostream>
+#include <fstream>
+#include <vector>
 using namespace std;
 
 //create consts for each probability of an event happening
-const int MIN = 1, MAX = 100, START = 5, HELP = 40, JOIN = 60, END_LEAVE = 20, LEAVE = 10, VIP = 10;
+const int MIN = 1, MAX = 100, START = 5, HELP = 40, JOIN = 60, END_LEAVE = 20, LEAVE = 10, VIP = 10, PERIODS = 20;
 
 class DoublyLinkedList {
 private:
@@ -18,10 +20,10 @@ private:
         }
     };
 
+public:
     Node* head;
     Node* tail;
 
-public:
     DoublyLinkedList() { head = nullptr; tail = nullptr; }
 
     void insert_after(string value, int position) {
@@ -206,10 +208,46 @@ public:
 };
 
 int main() {
+    //initialize random seed
+    srand(time(0));
+    
     //define doubly linked list for the line of customers at the coffee shop
     DoublyLinkedList line;
-    for (int i = 0; i < START; i++)
-        line.push_back();
-    
+
+    //initialize the line with START customers, suing names.txt randomly
+    ifstream fin("names.txt");
+    vector<string> names;
+    string name;
+    while (fin >> name) {
+        names.push_back(name);
+    }
+
+    for (int i = 0; i < START; i++) {
+        line.push_back(names[rand() % names.size()]);
+    }
+
+    //print initial line
+    cout << "Initial line (Minute 1): " << endl;
+    line.print();
+    cout << endl;
+
+    //Time periods 2-20
+    for (int i = 2; i <= 20; i++) {
+        cout << "Minute " << i << ": " << endl;
+        //check if the first person orders (40%)
+        if (rand() % 100 < HELP) {
+            //print name of the person being helped and remove them from the line
+            cout << line.head->data << " served" << endl;
+            line.pop_front();
+        }
+        //check if a new person joins the line (60%)
+        if (rand() % 100 < JOIN) {
+            string newName = names[rand() % names.size()];
+            line.push_back(newName);
+            cout << newName << " joined the line" << endl;
+        }
+
+    }
+
     return 0;
 }
